@@ -1,0 +1,101 @@
+import statistics as stats
+from typing import Any, Literal
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class UserData(BaseModel):
+    """
+    Pydantic model for client payloads
+    """
+    vals: list[dict[str, Any]] | list[int | float]
+    payload_type: Literal['dict', 'list']
+    key: str | None = None
+
+
+def normalize_data(userdata: UserData):
+    """
+    Normalizes input data into a list of numerical values for stat calculations
+    :param userdata: UserData object
+    :return: list of numerical values
+    """
+    flat_list = []
+
+    # Handling for list payloads
+    if userdata.payload_type == 'list':
+        return userdata.vals
+
+    # Handling for dict payloads
+    if userdata.payload_type == 'dict':
+        if userdata.key:            # Check for presence of key parameter
+            dict_keys = list(userdata.key in d.keys() for d in userdata.vals)
+
+            if all(dict_keys):       # Check for presence of key in all dicts
+                flat_list = [item[userdata.key] for item in userdata.vals]
+            else:
+                raise HTTPException(status_code=400, detail="Key must be present in all list[dict] entries")
+        else:
+            raise HTTPException(status_code=400, detail="Key not provided for dict")
+
+    # Validate numerical inputs
+    for val in flat_list:
+        if not isinstance(val, (int, float)):
+            raise HTTPException(status_code=400, detail="Values for calculation must be int or float")
+
+    return flat_list
+
+
+@app.post('/avg')
+def avg(data: UserData) -> dict[str, float]:
+    """ Calculates average value of input data """
+    flat_data = normalize_data(data)
+    return {'avg': stats.mean(flat_data)}
+
+
+@app.post('/sum')
+def total(data: UserData) -> dict[str, float]:
+    """ Calculates sum total of input data """
+    flat_data = normalize_data(data)
+    return {'total': sum(flat_data)}
+
+
+@app.post('/minmax')
+def minmax(data: UserData) -> dict[str, Any]:
+    """ Calculates min and max value of input data """
+    flat_data = normalize_data(data)
+    min_val = min(flat_data)
+    max_val = max(flat_data)
+    user_key = data.key
+
+    # Handling for lists
+    if not user_key:
+        min_entries = min(flat_data)
+        max_entries = max(flat_data)
+    # Handling for dicts with provided key
+    else:
+        min_entries = [entry for entry in data.vals if entry[user_key] == min_val]
+        max_entries = [entry for entry in data.vals if entry[user_key] == max_val]
+
+    return {
+        'key': data.key,
+        'min': min_entries,
+        'max': max_entries
+    }
+
+
+if __name__ == '__main__':
+    test_data = UserData(vals=[{'name': 'rufus', 'age': 5}, {'name': 'todd', 'age': 6}, {'name': 'marx', 'age': 7}], payload_type='dict', key='age')
+    print(normalize_data(test_data))
+    print(avg(data=test_data))
+    print(total(data=test_data))
+    print(minmax(data=test_data))
+
+    test_data = UserData(vals=[5, 6, 7], payload_type='list')
+    print(normalize_data(test_data))
+    print(avg(data=test_data))
+    print(total(data=test_data))
+    print(minmax(data=test_data))
+
+    bad_data = UserData(vals=[{'name': 'rufus', 'age': 'uhoh'}, {'name': 'todd', 'age': 6}, {'name': 'marx', 'age': 7}], payload_type='dict', key='age')

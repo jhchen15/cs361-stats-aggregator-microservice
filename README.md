@@ -127,6 +127,7 @@ POST request. Data is received in the format below.
 # /avg endpoint, list input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:
@@ -135,6 +136,7 @@ Body:
 # /avg endpoint, dict input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:
@@ -143,6 +145,7 @@ Body:
 # /sum endpoint, list input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:
@@ -151,6 +154,7 @@ Body:
 # /sum endpoint, dict input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:
@@ -159,6 +163,7 @@ Body:
 # /minmax endpoint, list input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:
@@ -171,6 +176,7 @@ Body:
 # /minmax endpoint, dict input
 Status Code: 200 OK
 Headers:
+Date: []
 Content-type: application/json
 Content-length: []
 Body:

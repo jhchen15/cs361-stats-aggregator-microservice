@@ -5,6 +5,9 @@
 The **Stats Aggregator Microservice** calculates and returns statistical
 calculations for a collection of numerical values or objects.
 
+Three endpoints are available that return the sum, average, and minimum/
+maximum values over values or a subset of values provided by the requestor.
+
 ## Quickstart
 
 ```sh
@@ -49,7 +52,7 @@ For a numeric/list collection, provide the values and indicate the payload type
 
 For a dictionary collection, provide the list of dict objects, the key upon
 which to perform statistical calculations, and indicate the payload type. 
-The provided key must be present in all dict objects.
+The provided key for calculations must be present in all dict objects.
 `'dict'`:
 
 ```
@@ -121,6 +124,11 @@ requests.post('http://localhost:8000/minmax', {
 
 Responses are received as HTTP JSON response data resulting from the client's
 POST request. Data is received in the format below.
+
+/avg and /sum return calculated values in dictionary format, /minmax returns
+a dictionary containing the key provided by the requestor (if any), and either
+calculated values (in the case of an input list), or the associated dictionary
+entries (in the case of an input dictionary).
 
 ### Sample responses
 

@@ -48,7 +48,8 @@ For a numeric/list collection, provide the values and indicate the payload type
 ```
 
 For a dictionary collection, provide the list of dict objects, the key upon
-which to perform statistical calculations, and indicate the payload type
+which to perform statistical calculations, and indicate the payload type. 
+The provided key must be present in all dict objects.
 `'dict'`:
 
 ```

@@ -44,7 +44,7 @@ POST request body parameters:
 - `payload_type`: `'list'` or `'dict'`; see
   [Required input format](#required-input-format) (Required).
 - `key`: The key that indicates which value to use for dict calculations (Required when
-  `payload_type == 'dict'`)
+  `payload_type == 'dict'`).
 
 #### `/sum`
 
@@ -57,7 +57,7 @@ POST request body parameters:
 - `payload_type`: `'list'` or `'dict'`; see
   [Required input format](#required-input-format) (Required).
 - `key`: The key that indicates which value to use for dict calculations (Required when
-  `payload_type == 'dict'`)
+  `payload_type == 'dict'`).
 
 #### `/minmax`
 
@@ -71,7 +71,7 @@ POST request body parameters:
 - `payload_type`: `'list'` or `'dict'`; see
   [Required input format](#required-input-format) (Required).
 - `key`: The key that indicates which value to use for dict calculations (Required when
-  `payload_type == 'dict'`)
+  `payload_type == 'dict'`).
 
 ### Required input format
 

@@ -33,10 +33,45 @@ key.
 
 ### Endpoints
 
-- `/avg`: Returns the mean average of the collection.
-- `/sum`: Returns the total of the collection.
-- `/minmax`: Returns the minimum and maximum value (or corresponding object, for
-  dict payloads) of the collection.
+#### `/avg`
+
+Returns the mean average of the collection (based on specified the key for dict payloads).
+
+POST request body parameters:
+
+- `vals`: List of numeric or dict values; see
+  [Required input format](#required-input-format) (Required).
+- `payload_type`: `'list'` or `'dict'`; see
+  [Required input format](#required-input-format) (Required).
+- `key`: The key that indicates which value to use for dict calculations (Required when
+  `payload_type == 'dict'`).
+
+#### `/sum`
+
+Returns the total of the collection (based on the specified key for dict payloads).
+
+POST request body parameters:
+
+- `vals`: List of numeric or dict values; see
+  [Required input format](#required-input-format) (Required).
+- `payload_type`: `'list'` or `'dict'`; see
+  [Required input format](#required-input-format) (Required).
+- `key`: The key that indicates which value to use for dict calculations (Required when
+  `payload_type == 'dict'`).
+
+#### `/minmax`
+
+Returns the minimum and maximum value (or corresponding object, for dict
+payloads) of the collection.
+
+POST request body parameters:
+
+- `vals`: List of numeric or dict values; see
+  [Required input format](#required-input-format) (Required).
+- `payload_type`: `'list'` or `'dict'`; see
+  [Required input format](#required-input-format) (Required).
+- `key`: The key that indicates which value to use for dict calculations (Required when
+  `payload_type == 'dict'`).
 
 ### Required input format
 

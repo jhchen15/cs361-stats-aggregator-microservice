@@ -233,4 +233,4 @@ Body:
 
 ## UML Diagram
 
-![UML Diagram](./assets/uml.png)
+![UML Diagram](./assets/stats_agg.png)

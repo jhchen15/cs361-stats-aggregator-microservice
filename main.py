@@ -15,35 +15,48 @@ class UserData(BaseModel):
     key: str | None = None
 
 
-def normalize_data(userdata: UserData):
+def validate_numeric(flat_list: list) -> None:
+    """Raises HTTPException if any value in the list is not int or float."""
+    for val in flat_list:
+        if not isinstance(val, (int, float)):
+            raise HTTPException(
+                status_code=400,
+                detail="Values for calculation must be int or float"
+            )
+
+
+def normalize_list(userdata: UserData) -> list:
+    """Extracts values from a list-type payload."""
+    return userdata.vals
+
+
+def normalize_dict(userdata: UserData) -> list:
+    """Extracts numerical values from a dict-type payload using the provided key."""
+    if not userdata.key:
+        raise HTTPException(status_code=400, detail="Key not provided for dict")
+
+    dict_keys = list(userdata.key in d.keys() for d in userdata.vals)
+    if not all(dict_keys):
+        raise HTTPException(
+            status_code=400,
+            detail="Key must be present in all list[dict] entries"
+        )
+
+    return [item[userdata.key] for item in userdata.vals]
+
+
+def normalize_data(userdata: UserData) -> list:
     """
-    Normalizes input data into a list of numerical values for stat calculations
+    Normalizes input data into a list of numerical values for stat calculations.
     :param userdata: UserData object
     :return: list of numerical values
     """
-    flat_list = []
-
-    # Handling for list payloads
     if userdata.payload_type == 'list':
-        return userdata.vals
+        flat_list = normalize_list(userdata)
+    else:
+        flat_list = normalize_dict(userdata)
 
-    # Handling for dict payloads
-    if userdata.payload_type == 'dict':
-        if userdata.key:            # Check for presence of key parameter
-            dict_keys = list(userdata.key in d.keys() for d in userdata.vals)
-
-            if all(dict_keys):       # Check for presence of key in all dicts
-                flat_list = [item[userdata.key] for item in userdata.vals]
-            else:
-                raise HTTPException(status_code=400, detail="Key must be present in all list[dict] entries")
-        else:
-            raise HTTPException(status_code=400, detail="Key not provided for dict")
-
-    # Validate numerical inputs
-    for val in flat_list:
-        if not isinstance(val, (int, float)):
-            raise HTTPException(status_code=400, detail="Values for calculation must be int or float")
-
+    validate_numeric(flat_list)
     return flat_list
 
 
